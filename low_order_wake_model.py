@@ -1,0 +1,79 @@
+"""Calculate C_T^* as a function
+of S_x, S_y, theta
+"""
+
+import numpy as np
+from py_wake import YZGrid
+from py_wake.turbulence_models import CrespoHernandez
+from py_wake.superposition_models import LinearSum
+from py_wake.rotor_avg_models import GQGridRotorAvg
+from py_wake.wind_farm_models.engineering_models import PropagateDownwind
+from py_wake.wind_turbines import OneTypeWindTurbines
+from py_wake.deficit_models import NiayifarGaussianDeficit
+from py_wake.site import UniformSite
+
+def wake_model(S_x, S_y, theta):
+    """Use a low order wake model to
+    calculate C_T^*
+
+    :param S_x: float distance between turbines in the x direction (metres)
+    :param S_y: float distance between turbines in the y direction (metres)
+    :param theta: float wind direction with respect to x direction (degrees)
+
+    :returns ct_star: float local turbine thrust coefficient (dimensionless)
+    """
+
+    #estimate thrust coefficient ct
+    ct_prime = 1.33
+    a = ct_prime/(4 + ct_prime)
+    ct = 4*a*(1-a)
+
+    #define a farm site with a background turbulence intensity of 0.1 (10%)
+    site = UniformSite([1],0.1)
+
+    #calculate turbine coordinates
+    x = np.hstack((np.arange(0, -10000, -S_x),np.arange(S_x, 1500, S_x)))
+    y = np.hstack((np.arange(0, 8500, S_y),np.arange(-S_y,-2000,-S_y)))
+    xx, yy = np.meshgrid(x,y)
+    x = xx.flatten()
+    y = yy.flatten()
+
+    #only consider turbines 10km upstream or 1km in the cross stream direction
+    streamwise_cond = -x*np.cos(theta*np.pi/180) +y*np.sin(theta*np.pi/180) < 10000
+    spanwise_cond = abs(-y*np.cos(theta*np.pi/180) - x*np.sin(theta*np.pi/180)) < 2000
+    total_cond = np.logical_and(streamwise_cond, spanwise_cond)
+    x_rot = x[total_cond]
+    y_rot = y[total_cond]
+
+    #create ideal turbines with constant thrust coefficients
+    my_wt = OneTypeWindTurbines(name='MyWT',
+                           diameter=100,
+                           hub_height=100,
+                           ct_func=lambda ws : np.interp(ws, [0, 30], [ct, ct]),
+                           power_func=lambda ws : np.interp(ws, [0, 30], [2, 2]),
+                           power_unit='kW')
+    windTurbines = my_wt
+
+    #select models to calculate wake deficits behind turbines
+    wake_deficit = PropagateDownwind(site, windTurbines, NiayifarGaussianDeficit(a=[0.38, 4e-3],use_effective_ws=True),
+                                superpositionModel=LinearSum(), rotorAvgModel = GQGridRotorAvg(4,3),
+                                turbulenceModel=CrespoHernandez())
+    
+    #run wind farm simulation
+    simulationResult = wake_deficit(x_rot, y_rot, ws=10, wd=270+theta)
+
+    #calculate turbine disk velocity
+    U_T = (1-a)*simulationResult.WS_eff[0]
+
+    #calculate velocity in wind farm layer (0-250m above the surface)
+    U_F = 0
+    for i in np.linspace(-S_x, 0, 200):
+        grid = YZGrid(x = i, y = np.linspace(-S_y/2,S_y/2,200),
+                        z = np.linspace(0,250,20))
+        flow_map = simulationResult.flow_map(grid=grid, ws=10, wd=270+theta)
+        U_F += np.mean(flow_map.WS_eff)
+    U_F = U_F/200
+
+    #calculate local turbine thrust coefficient
+    ct_star = float(ct_prime*(U_T/U_F)**2)
+    return ct_star
