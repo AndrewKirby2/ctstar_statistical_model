@@ -12,13 +12,14 @@ from py_wake.wind_turbines import OneTypeWindTurbines
 from py_wake.deficit_models import NiayifarGaussianDeficit
 from py_wake.site import UniformSite
 
-def wake_model(S_x, S_y, theta):
+def wake_model(S_x, S_y, theta, ti):
     """Use a low order wake model to
     calculate C_T^*
 
     :param S_x: float distance between turbines in the x direction (metres)
     :param S_y: float distance between turbines in the y direction (metres)
     :param theta: float wind direction with respect to x direction (degrees)
+    :param ti:  float ambient turbulence intensity (%)
 
     :returns ct_star: float local turbine thrust coefficient (dimensionless)
     """
@@ -28,8 +29,8 @@ def wake_model(S_x, S_y, theta):
     a = ct_prime/(4 + ct_prime)
     ct = 4*a*(1-a)
 
-    #define a farm site with a background turbulence intensity of 0.1 (10%)
-    site = UniformSite([1],0.1)
+    #define a farm site with an ambient turbulence intensity
+    site = UniformSite([1],ti/100)
 
     #calculate turbine coordinates
     x = np.hstack((np.arange(0, -10000, -S_x),np.arange(S_x, 1500, S_x)))
