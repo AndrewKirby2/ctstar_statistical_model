@@ -12,6 +12,8 @@ from py_wake.wind_turbines import OneTypeWindTurbines
 from py_wake.deficit_models import NiayifarGaussianDeficit
 from py_wake.site import UniformSite
 
+training_data = np.genfromtxt('training_data.csv', delimiter=',')
+
 def wake_model(S_x, S_y, theta, ti):
     """Use a low order wake model to
     calculate C_T^*
