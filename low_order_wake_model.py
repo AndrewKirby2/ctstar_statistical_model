@@ -12,8 +12,6 @@ from py_wake.wind_turbines import OneTypeWindTurbines
 from py_wake.deficit_models import NiayifarGaussianDeficit
 from py_wake.site import UniformSite
 
-training_data = np.genfromtxt('training_data.csv', delimiter=',')
-
 def wake_model(S_x, S_y, theta, ti):
     """Use a low order wake model to
     calculate C_T^*
@@ -80,3 +78,21 @@ def wake_model(S_x, S_y, theta, ti):
     #calculate local turbine thrust coefficient
     ct_star = float(ct_prime*(U_T/U_F)**2)
     return ct_star
+
+#load LES training data
+training_data = np.genfromtxt('training_data.csv', delimiter=',')
+#empty array to store wake model results
+ctstar_wake_model = np.zeros((50,4))
+#array of ambient turbulence intensity to loop over
+ti = [1,5,10,15]
+
+#loop over TI levels
+for i in range(4):
+    print("Turbulence intensity ",ti[i],"%")
+    #loop over each wind case
+    for j in range(50):
+        print("Wind farm case ",j)
+        ctstar_wake_model[j,i] = wake_model(training_data[j,0], training_data[j,1], training_data[j,2], ti[i])
+        print(ctstar_wake_model[j,i])
+
+np.savetxt('ctstar_wake_model.csv', ctstar_wake_model, delimiter=',')
