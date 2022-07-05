@@ -6,7 +6,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.gaussian_process.kernels import RBF, WhiteKernel
 from sklearn.gaussian_process import GaussianProcessRegressor
 from sklearn.pipeline import Pipeline
-from sklearn.metrics import mean_absolute_error
+from sklearn.metrics import mean_absolute_error, max_error
 from sklearn.model_selection import LeaveOneOut
 
 #load the LES training data
@@ -21,6 +21,7 @@ ctstar_wake_model = np.genfromtxt('ctstar_wake_model.csv', delimiter=',')
 ctstar_statistical_model = np.zeros((50,4))
 
 for i in range(4):
+  print(i)
   loo = LeaveOneOut()
   for train_index, test_index in loo.split(X):
       X_train, X_test = X[train_index], X[test_index]
@@ -43,8 +44,9 @@ for i in range(4):
       X_test_stan = scaler.transform(X_test)
 
       ctstar_statistical_model[test_index,i] = gp.predict(X_test_stan) + ctstar_wake_model[test_index,i]
- 
+for i in range(4):
   print(mean_absolute_error(ctstar_statistical_model[:,i], training_data[:,3])/0.75)
+  print(max_error(ctstar_statistical_model[:,i], training_data[:,3])/0.75)
 
 fig, ax = plt.subplots(nrows=2, ncols=2, figsize=[5.33,5.33])
 ax[0,0].scatter(training_data[:,3], ctstar_wake_model[:,0], label = 'Wake model')
