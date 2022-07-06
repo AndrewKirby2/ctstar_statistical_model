@@ -82,12 +82,14 @@ def wake_model(S_x, S_y, theta, ti):
 #load LES training data
 training_data = np.genfromtxt('training_data.csv', delimiter=',')
 #empty array to store wake model results
-ctstar_wake_model = np.zeros((50,4))
+ctstar_wake_model = np.zeros((50,6))
+ctstar_wake_model[:,:4] = np.genfromtxt('ctstar_wake_model.csv', delimiter=',')
+print(ctstar_wake_model)
 #array of ambient turbulence intensity to loop over
-ti = [1,5,10,15]
+ti = [1,5,10,15,20,25]
 
 #loop over TI levels
-for i in range(4):
+for i in range(4,6):
     print("Turbulence intensity ",ti[i],"%")
     #loop over each wind case
     for j in range(50):
