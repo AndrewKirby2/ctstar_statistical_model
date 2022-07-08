@@ -3,6 +3,7 @@ of S_x, S_y, theta
 """
 
 import numpy as np
+import diversipy.hycusampling as dp 
 from py_wake import YZGrid
 from py_wake.turbulence_models import CrespoHernandez
 from py_wake.superposition_models import LinearSum
@@ -79,22 +80,36 @@ def wake_model(S_x, S_y, theta, ti):
     ct_star = float(ct_prime*(U_T/U_F)**2)
     return ct_star
 
-#load LES training data
-training_data = np.genfromtxt('training_data.csv', delimiter=',')
+##load LES training data
+#training_data = np.genfromtxt('training_data.csv', delimiter=',')
 #empty array to store wake model results
-ctstar_wake_model = np.zeros((50,6))
-ctstar_wake_model[:,:4] = np.genfromtxt('ctstar_wake_model.csv', delimiter=',')
-print(ctstar_wake_model)
+#ctstar_wake_model = np.zeros((50,6))
+#ctstar_wake_model[:,:4] = np.genfromtxt('ctstar_wake_model.csv', delimiter=',')
+#print(ctstar_wake_model)
 #array of ambient turbulence intensity to loop over
-ti = [1,5,10,15,20,25]
+#ti = [1,5,10,15,20,25]
 
 #loop over TI levels
-for i in range(4,6):
-    print("Turbulence intensity ",ti[i],"%")
+#for i in range(4,6):
+#    print("Turbulence intensity ",ti[i],"%")
     #loop over each wind case
-    for j in range(50):
-        print("Wind farm case ",j)
-        ctstar_wake_model[j,i] = wake_model(training_data[j,0], training_data[j,1], training_data[j,2], ti[i])
-        print(ctstar_wake_model[j,i])
+#    for j in range(50):
+#        print("Wind farm case ",j)
+#        ctstar_wake_model[j,i] = wake_model(training_data[j,0], training_data[j,1], training_data[j,2], ti[i])
+#        print(ctstar_wake_model[j,i])
 
-np.savetxt('ctstar_wake_model.csv', ctstar_wake_model, delimiter=',')
+#np.savetxt('ctstar_wake_model.csv', ctstar_wake_model, delimiter=',')
+
+#experimental design for low fidelity observations
+design_lofi = dp.maximin_reconstruction(1000,3)
+design_lofi[:,:2] = 500 + 500*design_lofi[:,:2]
+design_lofi[:,2] = 45*design_lofi[:,2]
+print(np.shape(design_lofi))
+
+wake_model_results = np.zeros((1000,4))
+wake_model_results[:,:3] = design_lofi
+for i in range(1000):
+    print(i)
+    wake_model_results[i,3] = wake_model(wake_model_results[i,0], wake_model_results[i,1], wake_model_results[i,2], 10)
+
+np.savetxt('wake_model_results.csv', wake_model_results, delimiter=',')
