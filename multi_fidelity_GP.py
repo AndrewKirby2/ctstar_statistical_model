@@ -6,6 +6,7 @@ import emukit.multi_fidelity
 from emukit.model_wrappers.gpy_model_wrappers import GPyMultiOutputWrapper
 from emukit.multi_fidelity.models import GPyLinearMultiFidelityModel
 from sklearn.preprocessing import StandardScaler
+import time
 
 #load the LES training data
 training_data = np.genfromtxt('training_data.csv', delimiter = ',')
@@ -18,6 +19,7 @@ wake_model = np.genfromtxt('wake_model_results.csv', delimiter=',')
 X_low = wake_model[:,:3]
 y_low = wake_model[:,3]
 ctstar_statistical_model = np.zeros(50)
+ctstar_statistical_model_std = np.zeros(50)
 
 from emukit.multi_fidelity.convert_lists_to_array import convert_x_list_to_array, convert_xy_lists_to_arrays
 
@@ -62,12 +64,19 @@ for i in range(50):
 
     #make predictions
     lf_mean_mf_model, lf_var_mf_model = lin_mf_model.predict(X_test_l)
-    hf_mean_mf_model, hf_var__mf_model = lin_mf_model.predict(X_test_h)
+    start = time.time()
+    hf_mean_mf_model, hf_var_mf_model = lin_mf_model.predict(X_test_h)
+    end = time.time()
+    print(end-start)
     ctstar_statistical_model[test_index] = hf_mean_mf_model
+    ctstar_statistical_model_std[test_index] = np.sqrt(hf_var_mf_model)
     print(lf_mean_mf_model, ctstar_wake_model[test_index,2], hf_mean_mf_model, training_data[test_index,3])
 
 print(np.mean(np.abs(ctstar_statistical_model-training_data[:,3]))/0.75)
 print(np.max(np.abs(ctstar_statistical_model-training_data[:,3]))/0.75)
+
+np.savetxt('ctstar_statistical_model.csv', ctstar_statistical_model, delimiter=',')
+np.savetxt('ctstar_statistical_model_std.csv', ctstar_statistical_model_std, delimiter=',')
 
 plt.scatter(training_data[:,3], ctstar_wake_model[:,2], label='Wake model')
 plt.scatter(training_data[:,3], ctstar_statistical_model, label='Statistical model')
