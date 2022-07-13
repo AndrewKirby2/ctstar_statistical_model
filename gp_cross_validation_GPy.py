@@ -34,11 +34,13 @@ for i in range(50):
     #train GP model
     model = GPy.models.GPRegression(X_train_stan,y_train-ctstar_wake_model[train_index,2][:,None],kernel)
     model.optimize_restarts(num_restarts = 10)
-    print(kernel.rbf.lengthscale, kernel.white.variance)
 
     #make predictions
     X_test_stan = scaler.transform(X_test)
     y_pred, var = model.predict(X_test_stan)
     ctstar_statistical_model[i] = y_pred+ctstar_wake_model[test_index,2]
+    print(var)
+    print(kernel)
+    print(kernel.rbf.lengthscale)
 
 print(np.mean(np.abs(ctstar_statistical_model-training_data[:,3]))/0.75)
