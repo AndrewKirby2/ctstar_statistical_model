@@ -101,15 +101,15 @@ def wake_model(S_x, S_y, theta, ti):
 #np.savetxt('ctstar_wake_model.csv', ctstar_wake_model, delimiter=',')
 
 #experimental design for low fidelity observations
-design_lofi = dp.maximin_reconstruction(1000,3)
+design_lofi = dp.maximin_reconstruction(500,3)
 design_lofi[:,:2] = 500 + 500*design_lofi[:,:2]
 design_lofi[:,2] = 45*design_lofi[:,2]
 print(np.shape(design_lofi))
 
-wake_model_results = np.zeros((1000,4))
+wake_model_results = np.zeros((500,4))
 wake_model_results[:,:3] = design_lofi
-for i in range(1000):
+for i in range(500):
     print(i)
     wake_model_results[i,3] = wake_model(wake_model_results[i,0], wake_model_results[i,1], wake_model_results[i,2], 10)
 
-np.savetxt('wake_model_results.csv', wake_model_results, delimiter=',')
+np.savetxt('wake_model_results_500.csv', wake_model_results, delimiter=',')
