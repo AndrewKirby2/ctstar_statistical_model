@@ -15,7 +15,7 @@ y = training_data[:,3]
 
 #load the wake model data
 ctstar_wake_model = np.genfromtxt('ctstar_wake_model.csv', delimiter=',')
-wake_model = np.genfromtxt('wake_model_results_500.csv', delimiter=',')
+wake_model = np.genfromtxt('wake_model_results_250.csv', delimiter=',')
 #X_low = training_data[:,:3]
 #y_low = ctstar_wake_model[:,2]
 X_low = wake_model[:,:3]
@@ -89,8 +89,8 @@ for i in range(50):
 print(np.mean(np.abs(ctstar_statistical_model-training_data[:,3]))/0.75)
 print(np.max(np.abs(ctstar_statistical_model-training_data[:,3]))/0.75)
 
-np.savetxt('ctstar_statistical_model_500.csv', ctstar_statistical_model, delimiter=',')
-np.savetxt('ctstar_statistical_model_std_500.csv', ctstar_statistical_model_std, delimiter=',')
+np.savetxt('ctstar_statistical_model_250.csv', ctstar_statistical_model, delimiter=',')
+np.savetxt('ctstar_statistical_model_std_250.csv', ctstar_statistical_model_std, delimiter=',')
 
 plt.scatter(training_data[:,3], ctstar_wake_model[:,2], label='Wake model')
 plt.scatter(training_data[:,3], ctstar_statistical_model, label='Statistical model')
