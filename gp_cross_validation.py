@@ -11,7 +11,7 @@ from sklearn.model_selection import LeaveOneOut
 
 #load the LES training data
 training_data = np.genfromtxt('training_data.csv', delimiter = ',')
-X = training_data[:,:3]
+X = training_data[:,3]
 y = training_data[:,3]
 
 #load the wake model prior mean
@@ -44,6 +44,7 @@ for i in range(6):
       X_test_stan = scaler.transform(X_test)
 
       ctstar_statistical_model[test_index,i] = gp.predict(X_test_stan) + ctstar_wake_model[test_index,i]
+
 for i in range(6):
   print(mean_absolute_error(ctstar_statistical_model[:,i], training_data[:,3])/0.75)
   print(max_error(ctstar_statistical_model[:,i], training_data[:,3])/0.75)
@@ -56,46 +57,52 @@ ax[0,0].set_xlim([0.55,0.8])
 ax[0,0].set_ylim([0.45,0.8])
 ax[0,0].set_ylabel(r'$C_T^*$')
 ax[0,0].set_xlabel(r'$C_{T,LES}^*$')
+ax[0,0].set_title('Ambient TI=1%')
 
-ax[0,1].scatter(training_data[:,3], ctstar_wake_model[:,1], label = 'Wake model')
-ax[0,1].scatter(training_data[:,3], ctstar_statistical_model[:,1], label = 'Statistical model')
+ax[0,1].scatter(training_data[:,3], ctstar_wake_model[:,1])
+ax[0,1].scatter(training_data[:,3], ctstar_statistical_model[:,1])
 ax[0,1].plot([0.55,0.8],[0.55,0.8], c='k')
 ax[0,1].set_xlim([0.55,0.8])
 ax[0,1].set_ylim([0.45,0.8])
 ax[0,1].set_ylabel(r'$C_T^*$')
 ax[0,1].set_xlabel(r'$C_{T,LES}^*$')
+ax[0,1].set_title('Ambient TI=5%')
 
-ax[1,0].scatter(training_data[:,3], ctstar_wake_model[:,2], label = 'Wake model')
-ax[1,0].scatter(training_data[:,3], ctstar_statistical_model[:,2], label = 'Statistical model')
+ax[1,0].scatter(training_data[:,3], ctstar_wake_model[:,2])
+ax[1,0].scatter(training_data[:,3], ctstar_statistical_model[:,2])
 ax[1,0].plot([0.55,0.8],[0.55,0.8], c='k')
 ax[1,0].set_xlim([0.55,0.8])
 ax[1,0].set_ylim([0.45,0.8])
 ax[1,0].set_ylabel(r'$C_T^*$')
 ax[1,0].set_xlabel(r'$C_{T,LES}^*$')
+ax[1,0].set_title('Ambient TI=10%')
 
-ax[1,1].scatter(training_data[:,3], ctstar_wake_model[:,3], label = 'Wake model')
-ax[1,1].scatter(training_data[:,3], ctstar_statistical_model[:,3], label = 'Statistical model')
+ax[1,1].scatter(training_data[:,3], ctstar_wake_model[:,3])
+ax[1,1].scatter(training_data[:,3], ctstar_statistical_model[:,3])
 ax[1,1].plot([0.55,0.8],[0.55,0.8], c='k')
 ax[1,1].set_xlim([0.55,0.8])
 ax[1,1].set_ylim([0.45,0.8])
 ax[1,1].set_ylabel(r'$C_T^*$')
 ax[1,1].set_xlabel(r'$C_{T,LES}^*$')
+ax[1,1].set_title('Ambient TI=15%')
 
-ax[2,0].scatter(training_data[:,3], ctstar_wake_model[:,4], label = 'Wake model')
-ax[2,0].scatter(training_data[:,3], ctstar_statistical_model[:,4], label = 'Statistical model')
+ax[2,0].scatter(training_data[:,3], ctstar_wake_model[:,4])
+ax[2,0].scatter(training_data[:,3], ctstar_statistical_model[:,4])
 ax[2,0].plot([0.55,0.8],[0.55,0.8], c='k')
 ax[2,0].set_xlim([0.55,0.8])
 ax[2,0].set_ylim([0.45,0.8])
 ax[2,0].set_ylabel(r'$C_T^*$')
 ax[2,0].set_xlabel(r'$C_{T,LES}^*$')
+ax[2,0].set_title('Ambient TI=20%')
 
-ax[2,1].scatter(training_data[:,3], ctstar_wake_model[:,5], label = 'Wake model')
-ax[2,1].scatter(training_data[:,3], ctstar_statistical_model[:,5], label = 'Statistical model')
+ax[2,1].scatter(training_data[:,3], ctstar_wake_model[:,5])
+ax[2,1].scatter(training_data[:,3], ctstar_statistical_model[:,5])
 ax[2,1].plot([0.55,0.8],[0.55,0.8], c='k')
 ax[2,1].set_xlim([0.55,0.8])
 ax[2,1].set_ylim([0.45,0.8])
 ax[2,1].set_ylabel(r'$C_T^*$')
 ax[2,1].set_xlabel(r'$C_{T,LES}^*$')
+ax[2,1].set_title('Ambient TI=25%')
 
 fig.legend(bbox_to_anchor=(0.5,-0.1), loc="lower center", 
                 bbox_transform=fig.transFigure, ncol=2)
