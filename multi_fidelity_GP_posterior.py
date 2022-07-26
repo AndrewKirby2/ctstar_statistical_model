@@ -23,7 +23,7 @@ ctstar_statistical_model_std = np.zeros(50)
 
 from emukit.multi_fidelity.convert_lists_to_array import convert_x_list_to_array, convert_xy_lists_to_arrays
 
-fit_model = False
+fit_model = True
 
 if fit_model:
 
@@ -44,7 +44,7 @@ if fit_model:
     gpy_lin_mf_model.mixed_noise.Gaussian_noise.fix(1e-6)
     gpy_lin_mf_model.mixed_noise.Gaussian_noise_1.fix(1e-6)
 
-    lin_mf_model = model = GPyMultiOutputWrapper(gpy_lin_mf_model, 2, n_optimization_restarts=10)
+    lin_mf_model = model = GPyMultiOutputWrapper(gpy_lin_mf_model, 2, n_optimization_restarts=5)
 
     ## Fit the model
     lin_mf_model.optimize()
@@ -53,13 +53,13 @@ if fit_model:
     lin_mf_model.optimize()
 
     #save gp model
-    with open('model.pkl', 'wb') as file:
+    with open('lin_model.pkl', 'wb') as file:
         pickle.dump(lin_mf_model, file)
 
 else:
 
     #load gp model
-    with open('model.pkl', 'rb') as file:
+    with open('lin_model.pkl', 'rb') as file:
         lin_mf_model = pickle.load(file)
     
     print(lin_mf_model.gpy_model)
@@ -98,30 +98,30 @@ for z in np.arange(0,46,5):
     cbar = fig.colorbar(pcm_lf, ax=ax[0], shrink=0.97)
     cbar.set_label(r'Posterior mean')
 
-    pcm_hf = ax[1].pcolormesh(xx, yy, hf_mean_mf_model-0.8298110784822755*lf_mean_mf_model, vmin=0.075, vmax = 0.15)
+    pcm_hf = ax[1].pcolormesh(xx, yy, hf_mean_mf_model, vmin=0.5, vmax=0.8)
     ax[1].set_xlabel(r'$S_x$ (m)')
     ax[1].set_ylabel(r'$S_y$ (m)')
-    ax[1].set_title(r'b) $f_{err}(x)$', loc = 'left')
+    ax[1].set_title(r'b) $f_{high}(x)$', loc = 'left')
     plt.tight_layout()
     cbar = fig.colorbar(pcm_hf, ax=ax[1], shrink=0.97)
     cbar.set_label(r'Posterior mean')
-    plt.savefig(f'mf_gp_posterior/posterior_mean_theta{z}.png')
+    plt.savefig(f'mf_gp_posterior/lin_posterior_mean_theta{z}.png')
     plt.close()
 
     fig, ax = plt.subplots(nrows=1, ncols=2, figsize=[8,3])
-    pcm_lf = ax[0].pcolormesh(xx, yy, lf_var_mf_model, vmin=0, vmax=5e-6)
+    pcm_lf = ax[0].pcolormesh(xx, yy, lf_var_mf_model, vmin=0, vmax=1e-4)
     ax[0].set_xlabel(r'$S_x$ (m)')
     ax[0].set_ylabel(r'$S_y$ (m)')
     ax[0].set_title(r'a) $f_{low}(x)$', loc = 'left')
     cbar = fig.colorbar(pcm_lf, ax=ax[0], shrink=0.97)
     cbar.set_label(r'Posterior variance')
 
-    pcm_hf = ax[1].pcolormesh(xx, yy, hf_var_mf_model, vmin=0, vmax=2e-4)
+    pcm_hf = ax[1].pcolormesh(xx, yy, hf_var_mf_model, vmin=0, vmax=1e-4)
     ax[1].set_xlabel(r'$S_x$ (m)')
     ax[1].set_ylabel(r'$S_y$ (m)')
     ax[1].set_title(r'b) $f_{high}(x)$', loc = 'left')
     plt.tight_layout()
     cbar = fig.colorbar(pcm_hf, ax=ax[1], shrink=0.97)
     cbar.set_label(r'Posterior variance')
-    plt.savefig(f'mf_gp_posterior/posterior_std_theta{z}.png')
+    plt.savefig(f'mf_gp_posterior/lin_posterior_std_theta{z}.png')
     plt.close()
