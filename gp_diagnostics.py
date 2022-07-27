@@ -6,8 +6,8 @@ import statsmodels.api as sm
 LES_results = np.genfromtxt('training_data.csv', delimiter=',')
 
 #load statistical model results
-stat_model_mean = np.genfromtxt('ctstar_statistical_model_1000.csv', delimiter=',')
-stat_model_std = np.genfromtxt('ctstar_statistical_model_std_1000.csv', delimiter=',')
+stat_model_mean = np.genfromtxt('ctstar_nonlin_statistical_model.csv', delimiter=',')
+stat_model_std = np.genfromtxt('ctstar_nonlin_statistical_model_std.csv', delimiter=',')
 
 standardised_errors = (stat_model_mean - LES_results[:,3])/stat_model_std
 

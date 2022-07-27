@@ -23,7 +23,7 @@ ctstar_statistical_model_std = np.zeros(50)
 
 from emukit.multi_fidelity.convert_lists_to_array import convert_x_list_to_array, convert_xy_lists_to_arrays
 
-fit_model = False
+fit_model = True
 
 if fit_model:
 
@@ -48,15 +48,24 @@ if fit_model:
     for m in nonlin_mf_model.models:
         m.Gaussian_noise.variance.unfix()
     nonlin_mf_model.optimize()
+    print(kernels[0].variance)
+    print(kernels[0].lengthscale)
+    print(nonlin_mf_model.models[0].Gaussian_noise)
+    print(kernels[1].mul.scale_kernel_fidelity2.variance)
+    print(kernels[1].mul.scale_kernel_fidelity2.lengthscale)
+    print(kernels[1].mul.previous_fidelity_fidelity2)
+    print(kernels[1].bias_kernel_fidelity2.variance)
+    print(kernels[1].bias_kernel_fidelity2.lengthscale)
+    print(nonlin_mf_model.models[0].Gaussian_noise)
 
     #save gp model
-    with open('model.pkl', 'wb') as file:
+    with open('nonlin_model.pkl', 'wb') as file:
         pickle.dump(nonlin_mf_model, file)
 
 else:
 
     #load gp model
-    with open('model.pkl', 'rb') as file:
+    with open('nonlin_model.pkl', 'rb') as file:
         nonlin_mf_model = pickle.load(file)
 
 #create test points
