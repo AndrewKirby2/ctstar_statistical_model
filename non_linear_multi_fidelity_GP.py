@@ -13,20 +13,23 @@ training_data = np.genfromtxt('training_data.csv', delimiter = ',')
 X = training_data[:,:3]
 y = training_data[:,3]
 
+n_low=500
 #load the wake model data
 ctstar_wake_model = np.genfromtxt('ctstar_wake_model.csv', delimiter=',')
-wake_model = np.genfromtxt('wake_model_results_1000.csv', delimiter=',')
+wake_model = np.genfromtxt(f'wake_model_results_{n_low}.csv', delimiter=',')
 #X_low = training_data[:,:3]
 #y_low = ctstar_wake_model[:,2]
 X_low = wake_model[:,:3]
 y_low = wake_model[:,3]
 ctstar_statistical_model = np.zeros(50)
 ctstar_statistical_model_std = np.zeros(50)
+train_time = np.zeros(50)
+predict_time = np.zeros(50)
 
 from emukit.multi_fidelity.convert_lists_to_array import convert_x_list_to_array, convert_xy_lists_to_arrays
 
 for i in range(50):
-
+    print(i)
     #create training and testing data
     train_index = list(filter(lambda x: x!= i, range(50)))
     test_index = i
@@ -53,10 +56,14 @@ for i in range(50):
         m.Gaussian_noise.variance.fix(1e-6)
 
     # Fit the model
+    tic = time.time()
     nonlin_mf_model.optimize()
     for m in nonlin_mf_model.models:
         m.Gaussian_noise.variance.unfix()
     nonlin_mf_model.optimize()
+    toc = time.time()
+    train_time[i] = toc-tic
+    print(train_time[i])
 
     #create test points
     X_test_stan = scaler.transform(X_test)
@@ -68,17 +75,22 @@ for i in range(50):
 
     #make predictions
     lf_mean_mf_model, lf_var_mf_model = nonlin_mf_model.predict(X_test_l)
+    tic = time.time()
     hf_mean_mf_model, hf_var_mf_model = nonlin_mf_model.predict(X_test_h)
+    toc = time.time()
+    predict_time[i] = toc-tic
     ctstar_statistical_model[test_index] = hf_mean_mf_model
     ctstar_statistical_model_std[test_index] = np.sqrt(hf_var_mf_model)
     print(lf_mean_mf_model, ctstar_wake_model[test_index,2], hf_mean_mf_model, training_data[test_index,3])
     print(ctstar_statistical_model_std[test_index])
 
-print(np.mean(np.abs(ctstar_statistical_model-training_data[:,3]))/0.75)
-print(np.max(np.abs(ctstar_statistical_model-training_data[:,3]))/0.75)
+print('MAE = ',np.mean(np.abs(ctstar_statistical_model-training_data[:,3]))/0.75)
+print('Max error = ',np.max(np.abs(ctstar_statistical_model-training_data[:,3]))/0.75)
+print('Mean train time = ',np.mean(train_time))
+print('Mean prediction time =', np.mean(predict_time))
 
-np.savetxt('ctstar_nonlin_statistical_model.csv', ctstar_statistical_model, delimiter=',')
-np.savetxt('ctstar_nonlin_statistical_model_std_2000.csv', ctstar_statistical_model_std, delimiter=',')
+np.savetxt(f'ctstar_nonlin_statistical_model_{n_low}.csv', ctstar_statistical_model, delimiter=',')
+np.savetxt(f'ctstar_nonlin_statistical_model_std_{n_low}.csv', ctstar_statistical_model_std, delimiter=',')
 
 plt.scatter(training_data[:,3], ctstar_wake_model[:,2], label='Wake model')
 plt.scatter(training_data[:,3], ctstar_statistical_model, label='Statistical model')

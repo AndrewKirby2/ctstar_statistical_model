@@ -15,7 +15,7 @@ y_high = training_data[:,3]
 
 #load the wake model data
 ctstar_wake_model = np.genfromtxt('ctstar_wake_model.csv', delimiter=',')
-wake_model = np.genfromtxt('wake_model_results_1000.csv', delimiter=',')
+wake_model = np.genfromtxt('wake_model_results_500.csv', delimiter=',')
 X_low = wake_model[:,:3]
 y_low = wake_model[:,3]
 ctstar_statistical_model = np.zeros(50)
