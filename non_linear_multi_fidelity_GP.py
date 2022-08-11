@@ -28,6 +28,7 @@ predict_time = np.zeros(50)
 
 from emukit.multi_fidelity.convert_lists_to_array import convert_x_list_to_array, convert_xy_lists_to_arrays
 
+#perform LOOCV
 for i in range(50):
     print(i)
     #create training and testing data
@@ -67,11 +68,8 @@ for i in range(50):
 
     #create test points
     X_test_stan = scaler.transform(X_test)
-    #X_test_mf = convert_x_list_to_array([X_test_stan, X_test_stan])
     X_test_l = np.concatenate([np.atleast_2d(X_test_stan), np.zeros((X_test_stan.shape[0], 1))], axis=1)
     X_test_h = np.concatenate([np.atleast_2d(X_test_stan), np.ones((X_test_stan.shape[0], 1))], axis=1)
-    #X_test_l = X_test_mf[0,:][None,:]
-    #X_test_h = X_test_mf[1,:][None,:]
 
     #make predictions
     lf_mean_mf_model, lf_var_mf_model = nonlin_mf_model.predict(X_test_l)
@@ -84,19 +82,16 @@ for i in range(50):
     print(lf_mean_mf_model, ctstar_wake_model[test_index,2], hf_mean_mf_model, training_data[test_index,3])
     print(ctstar_statistical_model_std[test_index])
 
+#print(results)
+print('Statistical model results')
 print('MAE = ',np.mean(np.abs(ctstar_statistical_model-training_data[:,3]))/0.75)
 print('Max error = ',np.max(np.abs(ctstar_statistical_model-training_data[:,3]))/0.75)
-print('Mean train time = ',np.mean(train_time))
-print('Mean prediction time =', np.mean(predict_time))
+print('Analytical model results')
+print('MAE = ',np.mean(np.abs(0.75-training_data[:,3]))/0.75)
+print('Max error = ',np.max(np.abs(0.75-training_data[:,3]))/0.75)
+print('Wake model results')
+print('MAE = ',np.mean(np.abs(ctstar_wake_model[:,2]-training_data[:,3]))/0.75)
+print('Max error = ',np.max(np.abs(ctstar_wake_model[:,2]-training_data[:,3]))/0.75)
 
 np.savetxt(f'ctstar_nonlin_statistical_model_{n_low}.csv', ctstar_statistical_model, delimiter=',')
 np.savetxt(f'ctstar_nonlin_statistical_model_std_{n_low}.csv', ctstar_statistical_model_std, delimiter=',')
-
-plt.scatter(training_data[:,3], ctstar_wake_model[:,2], label='Wake model')
-plt.scatter(training_data[:,3], ctstar_statistical_model, label='Statistical model')
-plt.plot([0.55,0.8],[0.55,0.8], c='k')
-plt.xlim([0.55,0.8])
-plt.ylim([0.45,0.8])
-plt.ylabel(r'$C_T^*$')
-plt.xlabel(r'$C_{T,LES}^*$')
-plt.savefig('multi_fidelity_results.png')
