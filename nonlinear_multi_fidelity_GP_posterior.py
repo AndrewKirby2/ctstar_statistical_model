@@ -14,7 +14,7 @@ X_high = training_data[:,:3]
 y_high = training_data[:,3]
 
 #load the wake model data
-ctstar_wake_model = np.genfromtxt('ctstar_wake_model.csv', delimiter=',')
+#ctstar_wake_model = np.genfromtxt('ctstar_wake_model.csv', delimiter=',')
 wake_model = np.genfromtxt('wake_model_results_500.csv', delimiter=',')
 X_low = wake_model[:,:3]
 y_low = wake_model[:,3]
@@ -87,6 +87,7 @@ for z in np.arange(0,46,5):
 
     lf_mean_mf_model, lf_var_mf_model = nonlin_mf_model.predict(X_test_l)
     hf_mean_mf_model, hf_var_mf_model = nonlin_mf_model.predict(X_test_h)
+    np.save(f'hf_mean_mf_model_theta{z}.npy', hf_mean_mf_model)
     hf_mean_mf_model = np.reshape(hf_mean_mf_model.flatten(),(n_x,n_y))
     lf_mean_mf_model = np.reshape(lf_mean_mf_model.flatten(),(n_x,n_y))
     lf_var_mf_model = np.reshape(lf_var_mf_model.flatten(),(n_x,n_y))

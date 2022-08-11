@@ -125,41 +125,42 @@ for i in range(6):
 # 4. Plot results
 #############################################
 fig, ax = plt.subplots(nrows=3, ncols=2, figsize=[5.33,6.6], dpi=600)
-ax[0,0].scatter(effective_area_ratio, cp_statistical_model[:,0], s=30, marker='x', c='r')
-ax[0,0].scatter(effective_area_ratio, cp_finite[:,0], s=30, marker='^', facecolors='none', edgecolors='k')
+ax[0,0].scatter(effective_area_ratio, cp_statistical_model[:,0], s=30, marker='x', c='r', label='Predictions')
+ax[0,0].scatter(effective_area_ratio, cp_finite[:,0], s=30, marker='^', facecolors='none', edgecolors='k', label='LES results')
+ax[0,0].legend()
 ax[0,0].set_xlabel(r'$\lambda/C_{f0}$')
 ax[0,0].set_ylabel(r'$C_p$')
-ax[0,0].set_title('a)', loc='left')
+ax[0,0].set_title(r'a) $\zeta=0$', loc='left')
 
 ax[0,1].scatter(effective_area_ratio, cp_statistical_model[:,1], s=30, marker='x', c='r')
 ax[0,1].scatter(effective_area_ratio, cp_finite[:,1], s=30, marker='^', facecolors='none', edgecolors='k')
 ax[0,1].set_xlabel(r'$\lambda/C_{f0}$')
 ax[0,1].set_ylabel(r'$C_{p,finite}$')
-ax[0,1].set_title('b)', loc='left')
+ax[0,1].set_title(r'b) $\zeta=5$', loc='left')
 
 ax[1,0].scatter(effective_area_ratio, cp_statistical_model[:,2], s=30, marker='x', c='r')
 ax[1,0].scatter(effective_area_ratio, cp_finite[:,2], s=30, marker='^', facecolors='none', edgecolors='k')
 ax[1,0].set_xlabel(r'$\lambda/C_{f0}$')
 ax[1,0].set_ylabel(r'$C_{p.finite}$')
-ax[1,0].set_title('c)', loc='left')
+ax[1,0].set_title(r'c) $\zeta=10$', loc='left')
 
 ax[1,1].scatter(effective_area_ratio, cp_statistical_model[:,3], s=30, marker='x', c='r')
 ax[1,1].scatter(effective_area_ratio, cp_finite[:,3], s=30, marker='^', facecolors='none', edgecolors='k')
 ax[1,1].set_xlabel(r'$\lambda/C_{f0}$')
 ax[1,1].set_ylabel(r'$C_{p,finite}$')
-ax[1,1].set_title('d)', loc='left')
+ax[1,1].set_title(r'd) $\zeta=15$', loc='left')
 
 ax[2,0].scatter(effective_area_ratio, cp_statistical_model[:,4], s=30, marker='x', c='r')
 ax[2,0].scatter(effective_area_ratio, cp_finite[:,4], s=30, marker='^', facecolors='none', edgecolors='k')
 ax[2,0].set_xlabel(r'$\lambda/C_{f0}$')
 ax[2,0].set_ylabel(r'$C_{p,finite}$')
-ax[2,0].set_title('e)', loc='left')
+ax[2,0].set_title(r'e) $\zeta=20$', loc='left')
 
 ax[2,1].scatter(effective_area_ratio, cp_statistical_model[:,5], s=30, marker='x', c='r')
 ax[2,1].scatter(effective_area_ratio, cp_finite[:,5], s=30, marker='^', facecolors='none', edgecolors='k')
 ax[2,1].set_xlabel(r'$\lambda/C_{f0}$')
 ax[2,1].set_ylabel(r'$C_{p,finite}$')
-ax[2,1].set_title('f)', loc='left')
+ax[2,1].set_title(r'f) $\zeta=25$', loc='left')
 
 plt.tight_layout()
 
