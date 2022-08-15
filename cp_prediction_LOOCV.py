@@ -20,6 +20,9 @@ gamma=2
 cp_finite = np.zeros((50,6))
 effective_area_ratio = np.zeros(50)
 cp_statistical_model = np.zeros((50,6))
+cp_theory_predictions = np.zeros((50,6))
+cp_theory_trend = np.zeros((50,6))
+effective_area_ratio_trend = np.linspace(1,20,50)
 
 #load statistical model predictions of C_T^*
 ctstar_statistical_model = np.genfromtxt('ctstar_nonlin_statistical_model_500.csv', delimiter=',')
@@ -108,18 +111,43 @@ for i in range(6):
     #predict Cp for each wind farm LES
     for run_no in range(50):
 
+        #predict cp using statistical model of C_T^* (LOOCV)
         def NDFM(beta):
             """ Non-dimensional farm momentum
             equation (see Nishino 2020)
             """
-	    #use ct_star to predict beta
-	    #ctstar predictions from LOOCV
             return ctstar_statistical_model[run_no]*effective_area_ratio[run_no]*beta**2 + beta**gamma - 1 -zeta[i]*(1-beta)
 
         beta_theory = sp.bisect(NDFM,0,1)
         cp_statistical_model[run_no,i] = ctstar_statistical_model[run_no]**1.5 * beta_theory**3 * 1.33**-0.5
 
+        #predict C_T^* using analytical model of C_T^*
+        def NDFM(beta):
+            """ Non-dimensional farm momentum
+            equation (see Nishino 2020)
+            """
+            return 0.75*effective_area_ratio[run_no]*beta**2 + beta**gamma - 1 -zeta[i]*(1-beta)
+
+        beta_theory = sp.bisect(NDFM,0,1)
+        cp_theory_predictions[run_no,i] = 0.75**1.5 * beta_theory**3 * 1.33**-0.5
+
+        #save data to plot theoretical trend of C_p
+        def NDFM(beta):
+            """ Non-dimensional farm momentum
+            equation (see Nishino 2020)
+            """
+            return 0.75*effective_area_ratio_trend[run_no]*beta**2 + beta**gamma - 1 -zeta[i]*(1-beta)
+
+        beta_theory = sp.bisect(NDFM,0,1)
+        cp_theory_trend[run_no,i] = 0.75**1.5 * beta_theory**3 * 1.33**-0.5
+
     print(mean_absolute_error(cp_finite[:,i], cp_statistical_model[:,i])/0.563205)
+
+np.save('cp_finite.npy', cp_finite)
+np.save('cp_statistical_model.npy', cp_statistical_model)
+np.save('cp_theory_predictions.npy', cp_theory_predictions)
+np.save('cp_theory_trend.npy', cp_theory_trend)
+np.save('effective_area_ratio_trend', effective_area_ratio_trend)
 
 #############################################
 # 4. Plot results
