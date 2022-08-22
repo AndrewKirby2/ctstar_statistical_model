@@ -8,7 +8,7 @@ wind farm "extractability"
 import numpy as np
 import scipy.optimize as sp
 import matplotlib.pyplot as plt
-from sklearn.metrics import mean_absolute_error
+from sklearn.metrics import mean_absolute_error, mean_absolute_percentage_error
 
 #wind farm parameters
 #momentum `extractability' factor
@@ -141,7 +141,21 @@ for i in range(6):
         beta_theory = sp.bisect(NDFM,0,1)
         cp_theory_trend[run_no,i] = 0.75**1.5 * beta_theory**3 * 1.33**-0.5
 
-    print(mean_absolute_error(cp_finite[:,i], cp_statistical_model[:,i])/0.563205)
+#print table of MAPE
+print("Mean Absolute Percentage Error")
+print('zeta     Analytical model (%)    Statistical model (%)')
+for i in range(6):
+    print(zeta[i],"     ", 100*mean_absolute_percentage_error(cp_finite[:,i], cp_theory_predictions[:,i])
+           ,"      ",  100*mean_absolute_percentage_error(cp_finite[:,i], cp_statistical_model[:,i]))
+
+#print table of MAE
+print()
+print("Mean Absolute Error (normalised by Betz prediction)")
+print('zeta     Analytical model (%)    Statistical model (%)')
+for i in range(6):
+    print(zeta[i],"        ", 100*mean_absolute_error(cp_finite[:,i], cp_theory_predictions[:,i])/0.563205
+           ,"      ",  100*mean_absolute_error(cp_finite[:,i], cp_statistical_model[:,i])/0.563205)
+
 
 np.save('cp_finite.npy', cp_finite)
 np.save('cp_statistical_model.npy', cp_statistical_model)

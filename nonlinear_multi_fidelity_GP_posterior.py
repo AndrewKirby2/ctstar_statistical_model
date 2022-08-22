@@ -23,7 +23,7 @@ ctstar_statistical_model_std = np.zeros(50)
 
 from emukit.multi_fidelity.convert_lists_to_array import convert_x_list_to_array, convert_xy_lists_to_arrays
 
-fit_model = True
+fit_model = False
 
 if fit_model:
 
@@ -88,6 +88,7 @@ for z in np.arange(0,46,5):
     lf_mean_mf_model, lf_var_mf_model = nonlin_mf_model.predict(X_test_l)
     hf_mean_mf_model, hf_var_mf_model = nonlin_mf_model.predict(X_test_h)
     hf_mean_mf_model = np.reshape(hf_mean_mf_model.flatten(),(n_x,n_y))
+    np.save(f'lf_mean_mf_model_theta{z}.npy', lf_mean_mf_model)
     np.save(f'hf_mean_mf_model_theta{z}.npy', hf_mean_mf_model)
     lf_mean_mf_model = np.reshape(lf_mean_mf_model.flatten(),(n_x,n_y))
     lf_var_mf_model = np.reshape(lf_var_mf_model.flatten(),(n_x,n_y))
