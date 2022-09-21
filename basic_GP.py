@@ -83,8 +83,10 @@ ti = [1, 5, 10, 15]
 
 for j in range(4):
     print('Wake model prior mean ambient TI='+str(ti[j])+'%')
-    print('MAE = '+str(100*np.mean(np.abs(ctstar_statistical_model[:,j]-training_data[:,3]))/0.75)+'%')
+    print('MAE = '+str(100*np.mean(np.abs(ctstar_statistical_model[:,j]-training_data[:,3]))/0.75)
+    +'%       Max error = '+str(100*np.max(np.abs(ctstar_statistical_model[:,j]-training_data[:,3]))/0.75))
 
 print('Analytical model prior mean')
-print('MAE ='+str(100*np.mean(np.abs(ctstar_statistical_model[:,4]-training_data[:,3]))/0.75)+'%')
+print('MAE ='+str(100*np.mean(np.abs(ctstar_statistical_model[:,4]-training_data[:,3]))/0.75)
+    +'%       Max error = '+str(100*np.max(np.abs(ctstar_statistical_model[:,4]-training_data[:,3]))/0.75))
 np.save('ctstar_basic_gp_statistical_model.npy', ctstar_statistical_model)
