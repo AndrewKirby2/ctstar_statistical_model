@@ -95,8 +95,8 @@ for z in np.arange(0,46,5):
     np.save(f'data/hf_mean_mf_model_theta{z}.npy', hf_mean_mf_model)
     lf_var_mf_model = np.reshape(lf_var_mf_model.flatten(),(n_x,n_y))
     hf_var_mf_model = np.reshape(hf_var_mf_model.flatten(),(n_x,n_y))
-    np.save(f'data/lf_std_mf_model_theta{z}.npy', lf_mean_mf_model)
-    np.save(f'data/hf_std_mf_model_theta{z}.npy', hf_mean_mf_model)
+    np.save(f'data/lf_std_mf_model_theta{z}.npy', lf_std_mf_model)
+    np.save(f'data/hf_std_mf_model_theta{z}.npy', hf_std_mf_model)
 
     fig, ax = plt.subplots(nrows=1, ncols=2, figsize=[8,3])
     pcm_lf = ax[0].pcolormesh(xx, yy, lf_mean_mf_model, vmin=0.5, vmax=0.8)
