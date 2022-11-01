@@ -141,6 +141,13 @@ for i in range(6):
         beta_theory = sp.bisect(NDFM,0,1)
         cp_theory_trend[run_no,i] = 0.75**1.5 * beta_theory**3 * 1.33**-0.5
 
+#print table of MAE
+print("Mean Absolute Error")
+print('zeta     Analytical model        Statistical model ')
+for i in range(6):
+    print(zeta[i],"     ", mean_absolute_error(cp_finite[:,i], cp_theory_predictions[:,i])
+           ,"      ",  mean_absolute_error(cp_finite[:,i], cp_statistical_model[:,i]))
+
 #print table of MAPE
 print("Mean Absolute Percentage Error")
 print('zeta     Analytical model (%)    Statistical model (%)')
