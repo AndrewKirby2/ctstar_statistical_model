@@ -1,4 +1,5 @@
 """ Perform LOOCV of standard GP approach
+using different prior means
 """
 
 import numpy as np
@@ -24,8 +25,11 @@ ctstar_statistical_model = np.zeros((50,5))
 # [:,3] ambient TI = 15%
 ###############################################
 
+#loop over different ambient TI for
+#wake model prior mean
 for j in range(4):
 
+    #loop over data points to perform LOOCV
     for i in range(50):
 
         #create training and testing data
@@ -52,6 +56,7 @@ for j in range(4):
         #make predictions
         X_test_stan = scaler.transform(X_test)
         y_pred, var = model.predict(X_test_stan)
+        #store prediction ctstar values
         ctstar_statistical_model[i,j] = y_pred+ctstar_wake_model[test_index,j]
 
 ###########################
