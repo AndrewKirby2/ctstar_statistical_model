@@ -1,3 +1,6 @@
+""" Perform LOOCV of standard GP approach
+"""
+
 import numpy as np
 import GPy
 from IPython.display import display
@@ -10,12 +13,16 @@ y = training_data[:,3]
 
 #load the wake model prior mean
 ctstar_wake_model = np.genfromtxt('ctstar_wake_model.csv', delimiter=',')
+#array to store ctstar predictions
 ctstar_statistical_model = np.zeros((50,5))
 
-#######################
+##############################################
 # 1. Using wake model prior mean
-# note that index [:,2] means ambient TI = 10%
-#######################
+# note that index [:,0] means ambient TI = 1%
+# [:,1] ambient TI = 5%
+# [:,2] ambient TI = 10%
+# [:,3] ambient TI = 15%
+###############################################
 
 for j in range(4):
 
@@ -47,9 +54,10 @@ for j in range(4):
         y_pred, var = model.predict(X_test_stan)
         ctstar_statistical_model[i,j] = y_pred+ctstar_wake_model[test_index,j]
 
-#######################
-# 2. Using analytical model prior mean
-#######################
+###########################
+# 2. Using analytical model
+# prior mean
+###########################
 
 for i in range(50):
 
@@ -91,7 +99,6 @@ print('Analytical model prior mean')
 print('MAE ='+str(100*np.mean(np.abs(ctstar_statistical_model[:,4]-training_data[:,3]))/0.75)
     +'%       Max error = '+str(100*np.max(np.abs(ctstar_statistical_model[:,4]-training_data[:,3]))/0.75))
 print('MAE ='+str(np.mean(np.abs(ctstar_statistical_model[:,4]-training_data[:,3]))))
-#np.save('ctstar_basic_gp_statistical_model.npy', ctstar_statistical_model)
 
 ###############################
 # 3. Save posterior variance 
