@@ -25,12 +25,15 @@ cp_theory_trend = np.zeros((50,6))
 effective_area_ratio_trend = np.linspace(1,20,50)
 
 #load statistical model predictions of C_T^*
-ctstar_statistical_model = np.load('data/mf_GP_ctstar_predictions.npy')
+ctstar_statistical_model = np.load('data/mf_GP_ctstar_predictions.csv')
+#remove header
+ctstar_statistical_model = np.delete(ctstar_statistical_model, 0, 0)
+ctstar_statistical_model = np.delete(ctstar_statistical_model, 0, 1)
 #select predictions from MF-GP-nlow500
 ctstar_statistical_model = ctstar_statistical_model[:,1]
 
 #load LES data
-training_data = np.genfromtxt('LES_training_data.csv', delimiter=',')
+training_data = np.genfromtxt('data/LES_training_data.csv', delimiter=',')
 #remove header
 training_data = np.delete(training_data, 0, 0)
 training_data = np.delete(training_data, 0, 1)
