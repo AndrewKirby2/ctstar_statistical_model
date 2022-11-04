@@ -10,13 +10,16 @@ from sklearn.preprocessing import StandardScaler
 import string
 
 #load the LES training data
-training_data = np.genfromtxt('training_data.csv', delimiter = ',')
-X_high = training_data[:,:3]
-y_high = training_data[:,3]
+training_data = np.genfromtxt('data/LES_training_data.csv', delimiter = ',')
+#remove header
+training_data = np.delete(training_data, 0, 0)
+training_data = np.delete(training_data, 0, 1)
 
-#load the wake model data
-#ctstar_wake_model = np.genfromtxt('ctstar_wake_model.csv', delimiter=',')
-wake_model = np.genfromtxt('data/wake_model_results_500.csv', delimiter=',')
+#load low fidelity observations
+wake_model = np.genfromtxt(f'data/wake_model_maximin_500.csv', delimiter=',')
+#remove header
+wake_model = np.delete(wake_model, 0, 0)
+wake_model = np.delete(wake_model, 0, 1)
 X_low = wake_model[:,:3]
 y_low = wake_model[:,3]
 ctstar_statistical_model = np.zeros(50)
@@ -56,8 +59,8 @@ fig, ax = plt.subplots(nrows=2, ncols=5, figsize=[18.0*cm,10*cm], dpi=600)
 #create test points
 n_x = 50
 n_y = 50
-x = np.linspace(500, 1000, n_x)
-y = np.linspace(500, 1000, n_y)
+x = np.linspace(5, 10, n_x)
+y = np.linspace(5, 10, n_y)
 xx, yy = np.meshgrid(x,y)
 
 #loop over different theta values
@@ -82,9 +85,9 @@ for i in range(5):
         hf_std_mf_model = np.sqrt(hf_var_mf_model)
 
         if i+j==0:
-            pcm = ax[j, i].pcolormesh(xx/100, yy/100, hf_mean_mf_model, vmin=0.5, vmax=0.8, rasterized=True)
+            pcm = ax[j, i].pcolormesh(xx, yy, hf_mean_mf_model, vmin=0.5, vmax=0.8, rasterized=True)
         else:
-           ax[j, i].pcolormesh(xx/100, yy/100, hf_mean_mf_model, vmin=0.5, vmax=0.8, rasterized=True)
+           ax[j, i].pcolormesh(xx, yy, hf_mean_mf_model, vmin=0.5, vmax=0.8, rasterized=True)
         if i==0:
             ax[j, i].set_ylabel(r'$S_y/D$')
         if j==1:
@@ -130,9 +133,9 @@ for i in range(5):
         hf_std_mf_model = np.sqrt(hf_var_mf_model)
 
         if i+j==0:
-            pcm = ax[j, i].pcolormesh(xx/100, yy/100, hf_std_mf_model, vmin=0, vmax=0.03, rasterized=True)
+            pcm = ax[j, i].pcolormesh(xx, yy, hf_std_mf_model, vmin=0, vmax=0.03, rasterized=True)
         else:
-           ax[j, i].pcolormesh(xx/100, yy/100, hf_std_mf_model, vmin=0, vmax=0.03, rasterized=True)
+           ax[j, i].pcolormesh(xx, yy, hf_std_mf_model, vmin=0, vmax=0.03, rasterized=True)
         if i==0:
             ax[j, i].set_ylabel(r'$S_y/D$')
         if j==1:
@@ -180,13 +183,13 @@ for i in range(5):
 
         if j==0:
             if i+j==0:
-                pcm = ax[j, i].pcolormesh(xx/100, yy/100, hf_mean_mf_model, vmin=0.5, vmax=0.8, rasterized=True)
+                pcm = ax[j, i].pcolormesh(xx, yy, hf_mean_mf_model, vmin=0.5, vmax=0.8, rasterized=True)
             else:
-                ax[j, i].pcolormesh(xx/100, yy/100, hf_mean_mf_model, vmin=0.5, vmax=0.8, rasterized=True)
+                ax[j, i].pcolormesh(xx, yy, hf_mean_mf_model, vmin=0.5, vmax=0.8, rasterized=True)
             if i==0:
                 ax[j, i].set_ylabel(r'$S_y/D$')
         if j==1:
-            ax[j, i].pcolormesh(xx/100, yy/100, lf_mean_mf_model, vmin=0.5, vmax=0.8, rasterized=True)
+            ax[j, i].pcolormesh(xx, yy, lf_mean_mf_model, vmin=0.5, vmax=0.8, rasterized=True)
             ax[j, i].set_xlabel(r'$S_x/D$')
         ax[j, i].set_title(f'{string.ascii_lowercase[j*5+i]}) '+r'$\theta=$'+f'{i*10}'+r'$^o$', loc='left')
         ax[j, i].set_aspect('equal')

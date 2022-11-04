@@ -36,7 +36,10 @@ n_low=[250,500,1000]
 #loop over values of n_low
 for j in range(3):
     #load low fidelity observations
-    wake_model = np.genfromtxt(f'data/wake_model_results_{n_low[j]}.csv', delimiter=',')
+    wake_model = np.genfromtxt(f'data/wake_model_maximin_{n_low[j]}.csv', delimiter=',')
+    #remove header
+    wake_model = np.delete(wake_model, 0, 0)
+    wake_model = np.delete(wake_model, 0, 1)
     X_low = wake_model[:,:3]
     y_low = wake_model[:,3]
 
