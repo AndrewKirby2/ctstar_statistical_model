@@ -25,7 +25,9 @@ cp_theory_trend = np.zeros((50,6))
 effective_area_ratio_trend = np.linspace(1,20,50)
 
 #load statistical model predictions of C_T^*
-ctstar_statistical_model = np.genfromtxt('ctstar_nonlin_statistical_model_500.csv', delimiter=',')
+ctstar_statistical_model = np.load('data/mf_GP_ctstar_predictions.npy')
+#select predictions from MF-GP-nlow500
+ctstar_statistical_model = ctstar_statistical_model[:,1]
 
 #load LES data
 training_data = np.genfromtxt('LES_training_data.csv', delimiter=',')
@@ -174,43 +176,51 @@ np.save('effective_area_ratio_trend', effective_area_ratio_trend)
 # 4. Plot results
 #############################################
 fig, ax = plt.subplots(nrows=3, ncols=2, figsize=[5.33,6.6], dpi=600)
-ax[0,0].scatter(effective_area_ratio, cp_statistical_model[:,0], s=30, marker='x', c='r', label='Predictions')
-ax[0,0].scatter(effective_area_ratio, cp_finite[:,0], s=30, marker='^', facecolors='none', edgecolors='k', label='LES results')
-ax[0,0].legend()
+ax[0,0].plot(effective_area_ratio_trend[12:], cp_theory_trend[12:,0], label=r'$C_{p,Nishino}$')
+ax[0,0].scatter(effective_area_ratio, cp_statistical_model[:,0], s=30, marker='x', c='r', label=r'$C_{p,model}$')
+ax[0,0].scatter(effective_area_ratio, cp_finite[:,0], s=30, marker='^', facecolors='none', edgecolors='k', label=r'$C_{p,LES}$')
 ax[0,0].set_xlabel(r'$\lambda/C_{f0}$')
 ax[0,0].set_ylabel(r'$C_p$')
 ax[0,0].set_title(r'a) $\zeta=0$', loc='left')
 
+ax[0,1].plot(effective_area_ratio_trend[12:], cp_theory_trend[12:,1])
 ax[0,1].scatter(effective_area_ratio, cp_statistical_model[:,1], s=30, marker='x', c='r')
 ax[0,1].scatter(effective_area_ratio, cp_finite[:,1], s=30, marker='^', facecolors='none', edgecolors='k')
 ax[0,1].set_xlabel(r'$\lambda/C_{f0}$')
-ax[0,1].set_ylabel(r'$C_{p,finite}$')
+ax[0,1].set_ylabel(r'$C_p$')
 ax[0,1].set_title(r'b) $\zeta=5$', loc='left')
 
+ax[1,0].plot(effective_area_ratio_trend[12:], cp_theory_trend[12:,2])
 ax[1,0].scatter(effective_area_ratio, cp_statistical_model[:,2], s=30, marker='x', c='r')
 ax[1,0].scatter(effective_area_ratio, cp_finite[:,2], s=30, marker='^', facecolors='none', edgecolors='k')
 ax[1,0].set_xlabel(r'$\lambda/C_{f0}$')
-ax[1,0].set_ylabel(r'$C_{p.finite}$')
+ax[1,0].set_ylabel(r'$C_p$')
 ax[1,0].set_title(r'c) $\zeta=10$', loc='left')
 
+ax[1,1].plot(effective_area_ratio_trend[12:], cp_theory_trend[12:,3])
 ax[1,1].scatter(effective_area_ratio, cp_statistical_model[:,3], s=30, marker='x', c='r')
 ax[1,1].scatter(effective_area_ratio, cp_finite[:,3], s=30, marker='^', facecolors='none', edgecolors='k')
 ax[1,1].set_xlabel(r'$\lambda/C_{f0}$')
-ax[1,1].set_ylabel(r'$C_{p,finite}$')
+ax[1,1].set_ylabel(r'$C_p$')
 ax[1,1].set_title(r'd) $\zeta=15$', loc='left')
 
+ax[2,0].plot(effective_area_ratio_trend[12:], cp_theory_trend[12:,4])
 ax[2,0].scatter(effective_area_ratio, cp_statistical_model[:,4], s=30, marker='x', c='r')
 ax[2,0].scatter(effective_area_ratio, cp_finite[:,4], s=30, marker='^', facecolors='none', edgecolors='k')
 ax[2,0].set_xlabel(r'$\lambda/C_{f0}$')
-ax[2,0].set_ylabel(r'$C_{p,finite}$')
+ax[2,0].set_ylabel(r'$C_p$')
 ax[2,0].set_title(r'e) $\zeta=20$', loc='left')
 
+ax[2,1].plot(effective_area_ratio_trend[12:], cp_theory_trend[12:,5])
 ax[2,1].scatter(effective_area_ratio, cp_statistical_model[:,5], s=30, marker='x', c='r')
 ax[2,1].scatter(effective_area_ratio, cp_finite[:,5], s=30, marker='^', facecolors='none', edgecolors='k')
 ax[2,1].set_xlabel(r'$\lambda/C_{f0}$')
-ax[2,1].set_ylabel(r'$C_{p,finite}$')
+ax[2,1].set_ylabel(r'$C_p$')
 ax[2,1].set_title(r'f) $\zeta=25$', loc='left')
+
+fig.legend(bbox_to_anchor=(0.5,-0.05), loc="lower center", 
+                bbox_transform=fig.transFigure, ncol=3)
 
 plt.tight_layout()
 
-plt.savefig('LES_cp_results.png', bbox_inches='tight')
+plt.savefig('figures/cp_predictions.png', bbox_inches='tight')
