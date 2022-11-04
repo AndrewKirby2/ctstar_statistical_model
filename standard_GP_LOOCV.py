@@ -4,7 +4,6 @@ using different prior means
 
 import numpy as np
 import GPy
-from IPython.display import display
 from sklearn.preprocessing import StandardScaler
 
 #load the LES training data
