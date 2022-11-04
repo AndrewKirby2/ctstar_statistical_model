@@ -92,6 +92,7 @@ for i in range(50):
     y_pred, var = model.predict(X_test_stan)
     ctstar_statistical_model[i,4] = y_pred+0.75
 
+# print results of standard GP models
 ti = [1, 5, 10, 15]
 
 for j in range(4):
@@ -104,6 +105,9 @@ print('Analytical model prior mean')
 print('MAE ='+str(100*np.mean(np.abs(ctstar_statistical_model[:,4]-training_data[:,3]))/0.75)
     +'%       Max error = '+str(100*np.max(np.abs(ctstar_statistical_model[:,4]-training_data[:,3]))/0.75))
 print('MAE ='+str(np.mean(np.abs(ctstar_statistical_model[:,4]-training_data[:,3]))))
+
+#save ctstar predictions from statistical models
+np.save('data/standard_GP_ctstar_predictions.npy', ctstar_statistical_model)
 
 ###############################
 # 3. Save posterior variance 
