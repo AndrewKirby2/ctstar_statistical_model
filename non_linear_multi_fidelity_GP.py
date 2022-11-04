@@ -84,7 +84,7 @@ for j in range(3):
         ctstar_statistical_model_std[test_index,j] = np.sqrt(hf_var_mf_model)
 
 
-#print results)
+#print results
 for j in range(3):
     print('n_low = ',n_low[j])
     print('Statistical model results')
@@ -101,5 +101,5 @@ for j in range(3):
     print('Max error = ',np.max(np.abs(ctstar_wake_model[:,2]-training_data[:,3]))/0.75)
     print('---------------------------------')
 
-#np.savetxt(f'ctstar_nonlin_statistical_model_{n_low}.csv', ctstar_statistical_model, delimiter=',')
-#np.savetxt(f'ctstar_nonlin_statistical_model_std_{n_low}.csv', ctstar_statistical_model_std, delimiter=',')
+#save mf ctstar predictions
+np.save('data/mf_GP_ctstar_predictions.npy', ctstar_statistical_model)
