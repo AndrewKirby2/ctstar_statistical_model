@@ -14,9 +14,18 @@ from sklearn.preprocessing import StandardScaler
 import time
 
 #load the LES training data
-training_data = np.genfromtxt('training_data.csv', delimiter = ',')
+training_data = np.genfromtxt('data/LES_training_data.csv', delimiter = ',')
+#remove header
+training_data = np.delete(training_data, 0, 0)
+training_data = np.delete(training_data, 0, 1)
 X = training_data[:,:3]
 y = training_data[:,3]
+
+#load the wake model data (for comparison)
+ctstar_wake_model = np.genfromtxt('data/ctstar_wake_model.csv', delimiter=',')
+#remove header
+ctstar_wake_model = np.delete(ctstar_wake_model, 0, 0)
+ctstar_wake_model = np.delete(ctstar_wake_model, 0, 1)
 
 #arrays to store results
 ctstar_statistical_model = np.zeros((50,3))
@@ -26,8 +35,7 @@ n_low=[250,500,1000]
 
 #loop over values of n_low
 for j in range(3):
-    #load the wake model data
-    ctstar_wake_model = np.genfromtxt('ctstar_wake_model.csv', delimiter=',')
+    #load low fidelity observations
     wake_model = np.genfromtxt(f'data/wake_model_results_{n_low[j]}.csv', delimiter=',')
     X_low = wake_model[:,:3]
     y_low = wake_model[:,3]

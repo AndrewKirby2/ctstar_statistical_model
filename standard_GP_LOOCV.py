@@ -6,13 +6,19 @@ import numpy as np
 import GPy
 from sklearn.preprocessing import StandardScaler
 
-#load the LES training data
-training_data = np.genfromtxt('training_data.csv', delimiter = ',')
+#load LES data
+training_data = np.genfromtxt('data/LES_training_data.csv', delimiter=',')
+#remove header
+training_data = np.delete(training_data, 0, 0)
+training_data = np.delete(training_data, 0, 1)
 X = training_data[:,:3]
 y = training_data[:,3]
 
 #load the wake model prior mean
-ctstar_wake_model = np.genfromtxt('ctstar_wake_model.csv', delimiter=',')
+ctstar_wake_model = np.genfromtxt('data/ctstar_wake_model.csv', delimiter=',')
+#remove header
+ctstar_wake_model = np.delete(ctstar_wake_model, 0, 0)
+ctstar_wake_model = np.delete(ctstar_wake_model, 0, 1)
 #array to store ctstar predictions
 ctstar_statistical_model = np.zeros((50,5))
 
@@ -104,38 +110,3 @@ print('Analytical model prior mean')
 print('MAE ='+str(100*np.mean(np.abs(ctstar_statistical_model[:,4]-training_data[:,3]))/0.75)
     +'%       Max error = '+str(100*np.max(np.abs(ctstar_statistical_model[:,4]-training_data[:,3]))/0.75))
 print('MAE ='+str(np.mean(np.abs(ctstar_statistical_model[:,4]-training_data[:,3]))))
-
-#save ctstar predictions from statistical models
-np.save('data/standard_GP_ctstar_predictions.npy', ctstar_statistical_model)
-
-###############################
-# 3. Save posterior variance 
-# using all LES training points
-###############################
-
-scaler = StandardScaler()
-scaler.fit(X)
-X_train_stan = scaler.transform(X)
-
-#create GPy kernel
-kernel = GPy.kern.RBF(input_dim=3,ARD=True) + GPy.kern.White(input_dim=3)
-
-#train GP model
-model = GPy.models.GPRegression(X_train_stan,y-ctstar_wake_model[:,2][:,None],kernel)
-model.optimize_restarts(num_restarts = 10)
-
-#create test points
-n_x = 50
-n_y = 50
-x = np.linspace(500, 1000, n_x)
-y = np.linspace(500, 1000, n_y)
-xx, yy = np.meshgrid(x,y)
-
-for z in np.arange(0,46,5):
-
-    X_test = np.array([xx.flatten(),yy.flatten(),z*np.ones(n_x*n_y)]).transpose()
-    X_test_stan = scaler.transform(X_test)
-    y_pred, var = model.predict(X_test_stan)
-    std = np.sqrt(var)
-    std = np.reshape(std.flatten(),(n_x,n_y))
-    np.save(f'data/basic_gp_std_theta{z}.npy', std)

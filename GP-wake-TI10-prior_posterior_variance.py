@@ -14,12 +14,18 @@ cm = 1/2.54
 fig, ax = plt.subplots(nrows=2, ncols=5, figsize=[18.0*cm,10*cm], dpi=600)
 
 #load the LES training data
-training_data = np.genfromtxt('training_data.csv', delimiter = ',')
+training_data = np.genfromtxt('data/LES_training_data.csv', delimiter = ',')
+#remove header
+training_data = np.delete(training_data, 0, 0)
+training_data = np.delete(training_data, 0, 1)
 X = training_data[:,:3]
 y = training_data[:,3]
 
 #load the wake model prior mean
-ctstar_wake_model = np.load('data/standard_GP_ctstar_predictions.npy')
+ctstar_wake_model = np.genfromtxt('data/ctstar_wake_model.csv', delimiter=',')
+#remove header
+ctstar_wake_model = np.delete(ctstar_wake_model, 0, 0)
+ctstar_wake_model = np.delete(ctstar_wake_model, 0, 1)
 #load wake model data for TI=10%
 ctstar_wake_model_TI10 = ctstar_wake_model[:,2]
 
@@ -38,8 +44,8 @@ model.optimize_restarts(num_restarts = 10)
 #create test points
 n_x = 50
 n_y = 50
-x = np.linspace(500, 1000, n_x)
-y = np.linspace(500, 1000, n_y)
+x = np.linspace(5, 10, n_x)
+y = np.linspace(5, 10, n_y)
 xx, yy = np.meshgrid(x,y)
 
 #loop over different theta values
@@ -57,9 +63,9 @@ for i in range(5):
         std = np.reshape(std.flatten(),(n_x,n_y))
 
         if i+j==0:
-            pcm = ax[j, i].pcolormesh(xx/100, yy/100, std, vmin=0, vmax=0.03, rasterized=True)
+            pcm = ax[j, i].pcolormesh(xx, yy, std, vmin=0, vmax=0.03, rasterized=True)
         else:
-           ax[j, i].pcolormesh(xx/100, yy/100, std, vmin=0, vmax=0.03, rasterized=True)
+           ax[j, i].pcolormesh(xx, yy, std, vmin=0, vmax=0.03, rasterized=True)
         if i==0:
             ax[j, i].set_ylabel(r'$S_y/D$')
         if j==1:
@@ -72,4 +78,4 @@ plt.subplots_adjust(hspace=0.3)
 cbar = fig.colorbar(pcm, ax=ax.ravel().tolist(), location='bottom')
 cbar.solids.set_rasterized(True)
 cbar.set_label(r'$\sqrt{\overline{k}_{\sigma^2}}$')
-plt.savefig('figures/GP-wake-TI1-prior_posterior_variance.png')
+plt.savefig('figures/GP-wake-TI10-prior_posterior_variance.png')
