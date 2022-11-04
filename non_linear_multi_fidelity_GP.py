@@ -1,6 +1,10 @@
+"""Perform LOOCV for mf GP models
+Vary the number of low fidelity
+training points (n_low)
+"""
+
 import numpy as np
 import matplotlib.pyplot as plt
-
 import GPy
 import emukit.multi_fidelity
 from emukit.model_wrappers.gpy_model_wrappers import GPyMultiOutputWrapper
