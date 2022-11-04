@@ -6,6 +6,8 @@ i.e., figure 6
 import numpy as np
 import GPy
 from sklearn.preprocessing import StandardScaler
+import matplotlib.pyplot as plt
+import string
 
 #create plot
 cm = 1/2.54
@@ -46,7 +48,7 @@ for i in range(5):
         theta = (j*5+i)*5
 
         #create test data and standardise
-        X_test = np.array([xx.flatten(),yy.flatten(),z*np.ones(n_x*n_y)]).transpose()
+        X_test = np.array([xx.flatten(),yy.flatten(),theta*np.ones(n_x*n_y)]).transpose()
         X_test_stan = scaler.transform(X_test)
 
         #make predictions
@@ -70,4 +72,4 @@ plt.subplots_adjust(hspace=0.3)
 cbar = fig.colorbar(pcm, ax=ax.ravel().tolist(), location='bottom')
 cbar.solids.set_rasterized(True)
 cbar.set_label(r'$\sqrt{\overline{k}_{\sigma^2}}$')
-plt.savefig('GP-wake-TI1-prior_posterior_variance.png')
+plt.savefig('figures/GP-wake-TI1-prior_posterior_variance.png')
