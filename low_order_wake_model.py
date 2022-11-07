@@ -17,13 +17,20 @@ def wake_model(S_x, S_y, theta, ti):
     """Use a low order wake model to
     calculate C_T^*
 
-    :param S_x: float distance between turbines in the x direction (metres)
-    :param S_y: float distance between turbines in the y direction (metres)
+    :param S_x: float distance between turbines in the x direction (normalised by turbine diameter D)
+    :param S_y: float distance between turbines in the y direction (normalised by turbine diameter D)
     :param theta: float wind direction with respect to x direction (degrees)
     :param ti:  float ambient turbulence intensity (%)
 
     :returns ct_star: float local turbine thrust coefficient (dimensionless)
     """
+
+    #turbine diameter (in metres)
+    D = 100
+    
+    #convert S_x and S_y to metres
+    S_x = S_x*D
+    S_y = S_y*D
 
     #estimate thrust coefficient ct
     ct_prime = 1.33
@@ -80,36 +87,21 @@ def wake_model(S_x, S_y, theta, ti):
     ct_star = float(ct_prime*(U_T/U_F)**2)
     return ct_star
 
-##load LES training data
-#training_data = np.genfromtxt('training_data.csv', delimiter=',')
+#load the LES training data
+training_data = np.genfromtxt('data/LES_training_data.csv', delimiter = ',')
+#remove header
+training_data = np.delete(training_data, 0, 0)
+training_data = np.delete(training_data, 0, 1)
 #empty array to store wake model results
-#ctstar_wake_model = np.zeros((50,6))
-#ctstar_wake_model[:,:4] = np.genfromtxt('ctstar_wake_model.csv', delimiter=',')
-#print(ctstar_wake_model)
+ctstar_wake_model = np.zeros((50,6))
 #array of ambient turbulence intensity to loop over
-#ti = [1,5,10,15,20,25]
+ti = [1,5,10,15,20,25]
 
 #loop over TI levels
-#for i in range(4,6):
-#    print("Turbulence intensity ",ti[i],"%")
+for i in range(4,6):
+    print("Turbulence intensity ",ti[i],"%")
     #loop over each wind case
-#    for j in range(50):
-#        print("Wind farm case ",j)
-#        ctstar_wake_model[j,i] = wake_model(training_data[j,0], training_data[j,1], training_data[j,2], ti[i])
-#        print(ctstar_wake_model[j,i])
-
-#np.savetxt('ctstar_wake_model.csv', ctstar_wake_model, delimiter=',')
-
-#experimental design for low fidelity observations
-design_lofi = dp.maximin_reconstruction(2000,3)
-design_lofi[:,:2] = 500 + 500*design_lofi[:,:2]
-design_lofi[:,2] = 45*design_lofi[:,2]
-print(np.shape(design_lofi))
-
-wake_model_results = np.zeros((2000,4))
-wake_model_results[:,:3] = design_lofi
-for i in range(2000):
-    print(i)
-    wake_model_results[i,3] = wake_model(wake_model_results[i,0], wake_model_results[i,1], wake_model_results[i,2], 10)
-
-np.savetxt('wake_model_results_2000.csv', wake_model_results, delimiter=',')
+    for j in range(50):
+        print("Wind farm case ",j)
+        ctstar_wake_model[j,i] = wake_model(training_data[j,0], training_data[j,1], training_data[j,2], ti[i])
+        print(ctstar_wake_model[j,i])
