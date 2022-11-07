@@ -27,7 +27,7 @@ Perform LOOCV for standard GP model (see section 5.1). This uses data from Large
 ```
 python standard_GP_LOOCV.py
 ```
-Plot the posterior variance for the GP-wake-TI10-prior mean (figure is saved into the folder "figures")
+Plot the posterior variance for the \textbf{GP-wake-TI10-prior} (figure is saved into the folder "figures")
 ```
 python GP-wake-TI10-prior_posterior_variance.py
 ```
