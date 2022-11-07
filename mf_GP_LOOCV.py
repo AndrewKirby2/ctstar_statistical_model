@@ -115,6 +115,3 @@ for j in range(3):
     print('MAE = ',np.mean(np.abs(ctstar_wake_model[:,2]-training_data[:,3])))
     print('Max error = ',np.max(np.abs(ctstar_wake_model[:,2]-training_data[:,3]))/0.75)
     print('---------------------------------')
-
-#save mf ctstar predictions
-np.save('data/mf_GP_ctstar_predictions.npy', ctstar_statistical_model)
