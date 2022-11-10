@@ -14,6 +14,8 @@ training_data = np.genfromtxt('data/LES_training_data.csv', delimiter = ',')
 #remove header
 training_data = np.delete(training_data, 0, 0)
 training_data = np.delete(training_data, 0, 1)
+X_high = training_data[:,:3]
+y_high = training_data[:,3]
 
 #load low fidelity observations
 wake_model = np.genfromtxt(f'data/wake_model_maximin_500.csv', delimiter=',')
