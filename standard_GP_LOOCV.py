@@ -52,7 +52,7 @@ for j in range(4):
         X_train_stan = scaler.transform(X_train)
 
         #create GPy kernel
-        kernel = GPy.kern.RBF(input_dim=3,ARD=True) + GPy.kern.White(input_dim=3)
+        kernel = GPy.kern.RBF(input_dim=3,ARD=True)
 
         #train GP model
         model = GPy.models.GPRegression(X_train_stan,y_train-ctstar_wake_model[train_index,j][:,None],kernel)
@@ -86,7 +86,7 @@ for i in range(50):
     X_train_stan = scaler.transform(X_train)
 
     #create GPy kernel
-    kernel = GPy.kern.RBF(input_dim=3,ARD=True) + GPy.kern.White(input_dim=3)
+    kernel = GPy.kern.RBF(input_dim=3,ARD=True)
 
     #train GP model
     model = GPy.models.GPRegression(X_train_stan,y_train-0.75,kernel)
