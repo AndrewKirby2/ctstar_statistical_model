@@ -35,9 +35,6 @@ ti = [1, 5, 10, 15]
 #wake model prior mean
 for j in range(4):
 
-    #array to store posterior hyperparameters
-    post_hyp_param = np.zeros((50,4))
-
     #loop over data points to perform LOOCV
     for i in range(50):
 
@@ -62,26 +59,17 @@ for j in range(4):
         model = GPy.models.GPRegression(X_train_stan,y_train-ctstar_wake_model[train_index,j][:,None],kernel)
         model.optimize_restarts(num_restarts = 10)
 
-        post_hyp_param[i,0] = kernel.variance
-        post_hyp_param[i,1:4] = kernel.lengthscale
-
         #make predictions
         X_test_stan = scaler.transform(X_test)
         y_pred, var = model.predict(X_test_stan)
         #store prediction ctstar values
         ctstar_statistical_model[i,j] = y_pred+ctstar_wake_model[test_index,j]
 
-        #save posterior hyperparameters to csv file
-        np.savetxt(f'posterior_hyperparameters/GP-wake-TI{ti[j]}-prior.csv', post_hyp_param, delimiter=',',
-        header = 'Variance, Lengthscale 1 (S_x), Lengthscale 2 (S_y), Lengthscale 3 (theta)')
 
 ###########################
 # 2. Using analytical model
 # prior mean
 ###########################
-
-#array to store posterior hyperparameters
-post_hyp_param = np.zeros((50,4))
 
 for i in range(50):
 
@@ -106,17 +94,10 @@ for i in range(50):
     model = GPy.models.GPRegression(X_train_stan,y_train-0.75,kernel)
     model.optimize_restarts(num_restarts = 10)
 
-    post_hyp_param[i,0] = kernel.variance
-    post_hyp_param[i,1:4] = kernel.lengthscale
-
     #make predictions
     X_test_stan = scaler.transform(X_test)
     y_pred, var = model.predict(X_test_stan)
     ctstar_statistical_model[i,4] = y_pred+0.75
-
-    #save posterior hyperparameters to csv file
-    np.savetxt(f'posterior_hyperparameters/GP-wake-analytical-prior.csv', post_hyp_param, delimiter=',',
-    header = 'Variance, Lengthscale 1 (S_x), Lengthscale 2 (S_y), Lengthscale 3 (theta)')
 
 # print results of standard GP models
 

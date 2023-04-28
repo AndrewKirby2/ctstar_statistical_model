@@ -46,9 +46,6 @@ for j in range(3):
     train_time = np.zeros(50)
     predict_time = np.zeros(50)
 
-    #array to store posterior hyperparameters
-    post_hyp_param = np.zeros((50,14))
-
     #perform LOOCV
     for i in range(50):
         print(i)
@@ -87,16 +84,6 @@ for j in range(3):
         train_time[i] = toc-tic
         print(train_time[i])
 
-        #save posterior hyperparameters
-        post_hyp_param[i,0] = kernels[0].variance
-        post_hyp_param[i,1:4] = kernels[0].lengthscale
-        post_hyp_param[i,4] = kernels[1].mul.scale_kernel_fidelity2.variance
-        post_hyp_param[i,5:8] = kernels[1].mul.scale_kernel_fidelity2.lengthscale
-        post_hyp_param[i,8] = kernels[1].mul.previous_fidelity_fidelity2.variance
-        post_hyp_param[i,9] = kernels[1].mul.previous_fidelity_fidelity2.lengthscale
-        post_hyp_param[i,10] = kernels[1].bias_kernel_fidelity2.variance
-        post_hyp_param[i,11:14] = kernels[1].bias_kernel_fidelity2.lengthscale
-
         #create test points
         X_test_stan = scaler.transform(X_test)
         X_test_l = np.concatenate([np.atleast_2d(X_test_stan), np.zeros((X_test_stan.shape[0], 1))], axis=1)
@@ -110,12 +97,6 @@ for j in range(3):
         predict_time[i] = toc-tic
         ctstar_statistical_model[test_index,j] = hf_mean_mf_model
         ctstar_statistical_model_std[test_index,j] = np.sqrt(hf_var_mf_model)
-
-    np.savetxt(f'posterior_hyperparameters/mf_GP_nlow{n_low[j]}.csv', post_hyp_param, delimiter=',',
-    header = 'Low-fidelity variance, Low-fidelity lengthscale 1 (S_x), Low-fidelity lengthscale 2 (S_y), Low-fidelity lengthscale 3 (theta), '+
-    'Scale variance, Scale lengthscale 1 (S_x), Scale lengthscale 2 (S_y), Scale lengthscale 3 (theta), '+
-    'Previous fidelity fidelity 2 variance, Previous fidelity fidelity 2 lengthscale, '+
-    'Bias variance, Bias lengthscale 1 (S_x), Bias lengthscale 2 (S_y), Bias lengthscale 3 (theta)')
 
 
 #print results
