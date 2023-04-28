@@ -1,13 +1,13 @@
 """Make predictions of C_T^* using
-MF-GP-nlow250
+MF-GP-nlow1000
 """
 
 import pickle
 import numpy as np
 
-def MF_GP_nlow250(S_x, S_y, theta):
+def MF_GP_nlow1000(S_x, S_y, theta):
     """  Predicts C_T^* for turbine layout
-    using MF-GP-nlow250 model
+    using MF-GP-nlow1000 model
 
     Parameters
     ----------
@@ -32,7 +32,7 @@ def MF_GP_nlow250(S_x, S_y, theta):
     assert theta >= 0 and theta <= 45, "0 <= theta <= 45, note wind direction in degrees"
 
     #load saved data and scaler
-    with open('trained_models/MF-GP-nlow250.pkl', 'rb') as file:
+    with open('trained_models/MF-GP-nlow1000.pkl', 'rb') as file:
         nonlin_mf_model = pickle.load(file)
     with open('trained_models/scaler.pkl', 'rb') as file:
         scaler = pickle.load(file)

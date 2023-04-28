@@ -39,7 +39,14 @@ Plot the posterior distrubtions from MF-GP-nlow500 (i.e., figures 8, 9 and 11 in
 ```
 python MF-GP-nlow500_posterior.py
 ```
-Use predictions of C_T^* from MF-GP-nlow500 to predict farm power coefficient and compare with LES results and C_{p,Nishino
+Use predictions of C_T^* from MF-GP-nlow500 to predict farm power coefficient and compare with LES results and C_{p,Nishino}
 ```
 python cp_prediction_LOOCV.py
 ```
+Predict C_T^* using MF-GP-nlow500 for S_x = 7.5, S_y = 5.0, theta = 0 (deg)
+```
+python
+from trained_models.MF_GP_nlow500 import *
+MF_GP_nlow500(7.5, 5.0, 0)
+```
+Note that the prediction and predictive variance are returned
