@@ -31,6 +31,7 @@ def GP_analytical_prior(S_x, S_y, theta):
     assert S_y >= 5 and S_y <= 10, "5 <= S_y <= 10, note spacing is normalised by turbine diameter"
     assert theta >= 0 and theta <= 45, "0 <= theta <= 45, note wind direction in degrees"
 
+    #load saved model and scaler
     with open('trained_models/GP-analytical-prior.pkl', 'rb') as file:
         model = pickle.load(file)
     with open('trained_models/scaler.pkl', 'rb') as file:
@@ -38,6 +39,7 @@ def GP_analytical_prior(S_x, S_y, theta):
 
     X = np.array([S_x, S_y, theta]).transpose()
 
+    #scale data
     X_stan = scaler.transform(X.reshape(1,-1))
 
     y, var = model.predict(X_stan)

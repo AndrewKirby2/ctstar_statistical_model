@@ -126,7 +126,7 @@ for j in range(3):
 
     #save model
     with open(f'trained_models/MF-GP-nlow{n_low[j]}.pkl', 'wb') as file:
-        pickle.dump(model, file)
+        pickle.dump(nonlin_mf_model, file)
 
     mf_gp_post_hyp_param[j,0] = kernels[0].variance
     mf_gp_post_hyp_param[j,1:4] = kernels[0].lengthscale
