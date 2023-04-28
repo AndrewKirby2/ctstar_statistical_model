@@ -2,6 +2,7 @@
  for each model
 """
 
+import pickle
 import numpy as np
 import GPy
 from sklearn.preprocessing import StandardScaler
@@ -47,6 +48,10 @@ kernel = GPy.kern.RBF(input_dim=3,ARD=True)
 model = GPy.models.GPRegression(X_train_stan,y_train-0.75,kernel)
 model.optimize_restarts(num_restarts = 10, messages=False)
  
+#save model
+with open('trained_models/GP-analytical-prior.pkl', 'wb') as file:
+    pickle.dump(model, file)
+
 gp_post_hyp_param[0,0] = kernel.variance.values
 gp_post_hyp_param[0,1:] = kernel.lengthscale.values
 
@@ -66,6 +71,10 @@ for j in range(4):
     #train GP model
     model = GPy.models.GPRegression(X_train_stan,y_train-ctstar_wake_model[:,j][:,None],kernel)
     model.optimize_restarts(num_restarts = 10)
+
+    #save model
+    with open(f'trained_models/GP-wake-TI{ti[j]}-prior.pkl', 'wb') as file:
+        pickle.dump(model, file)
 
     gp_post_hyp_param[j+1,0] = kernel.variance.values
     gp_post_hyp_param[j+1,1:] = kernel.lengthscale.values
@@ -110,6 +119,10 @@ for j in range(3):
     for m in nonlin_mf_model.models:
         m.Gaussian_noise.variance.unfix()
     nonlin_mf_model.optimize()
+
+    #save model
+    with open(f'trained_models/MF-GP-nlow{n_low[j]}.pkl', 'wb') as file:
+        pickle.dump(model, file)
 
     mf_gp_post_hyp_param[j,0] = kernels[0].variance
     mf_gp_post_hyp_param[j,1:4] = kernels[0].lengthscale
