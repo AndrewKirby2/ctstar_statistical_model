@@ -34,6 +34,10 @@ scaler = StandardScaler()
 scaler.fit(X_train)
 X_train_stan = scaler.transform(X_train)
 
+#save scaler
+with open('trained_models/scaler.pkl', 'wb') as file:
+    pickle.dump(scaler, file)
+
 #array to store standard GP posterior hyperparameters
 gp_post_hyp_param = np.zeros((5,4))
 
