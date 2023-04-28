@@ -39,7 +39,7 @@ with open('trained_models/scaler.pkl', 'wb') as file:
     pickle.dump(scaler, file)
 
 #array to store standard GP posterior hyperparameters
-gp_post_hyp_param = np.zeros((5,4))
+gp_post_hyp_param = np.zeros((5,5))
 
 ###########################
 # 1. GP-analytical-prior
@@ -51,13 +51,15 @@ kernel = GPy.kern.RBF(input_dim=3,ARD=True)
 #train GP model
 model = GPy.models.GPRegression(X_train_stan,y_train-0.75,kernel)
 model.optimize_restarts(num_restarts = 10, messages=False)
+
  
 #save model
 with open('trained_models/GP-analytical-prior.pkl', 'wb') as file:
     pickle.dump(model, file)
 
 gp_post_hyp_param[0,0] = kernel.variance.values
-gp_post_hyp_param[0,1:] = kernel.lengthscale.values
+gp_post_hyp_param[0,1:4] = kernel.lengthscale.values
+gp_post_hyp_param[0,4] = model.Gaussian_noise.variance
 
 ###########################
 # 2. GP-wakeTI{x}-prior
@@ -81,7 +83,8 @@ for j in range(4):
         pickle.dump(model, file)
 
     gp_post_hyp_param[j+1,0] = kernel.variance.values
-    gp_post_hyp_param[j+1,1:] = kernel.lengthscale.values
+    gp_post_hyp_param[j+1,1:4] = kernel.lengthscale.values
+    gp_post_hyp_param[j+1,4] = model.Gaussian_noise.variance
 
 ###########################
 # 3. MF-GP-nlow{x}
