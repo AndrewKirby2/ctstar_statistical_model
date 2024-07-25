@@ -1,7 +1,7 @@
 # ctstar_statistical_model
 Clone remote GitHub repository
 ```
-git clone https://github.com/AndrewKirby2/ctstar_statistcal_model.git
+git clone https://github.com/AndrewKirby2/ctstar_statistical_model.git
 ```
 Change working directory
 ```
